@@ -25,7 +25,8 @@ const searchMovieReducer = (state = INITIAL_STATE, action) => {
             return { ...state, pageNumber: action.payload, }
 
         case actionTypes.SET_SEARCH_MOVIE_CLEAR:
-            return { ...state, searchMovies: [], totalPages: 0, totalResults: 0 }
+            return { ...state, searchMovies: []//, totalPages: 0, totalResults: 0 
+        }
 
         default:
             return state;

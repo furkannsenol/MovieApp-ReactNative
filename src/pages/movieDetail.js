@@ -31,11 +31,11 @@ const MovieDetail = ({ route, navigation }) => {
   const dispatch = useDispatch()
 
   const screenHeight = Dimensions.get('window').height;
+  const screeWidht = Dimensions.get('window').width
 
   //Teaser
   const teaserTrailers = useSelector(state => state.teaserTrailerReducer.teaserTrailers)
   const isLoading = useSelector(state => state.teaserTrailerReducer.isLoading)
-
   //Theme
   const themeMode = useSelector(state => state.themeModeReducer.themeMode)
   const theme = themeMode === 'dark' ? darkTheme : lightTheme
@@ -44,16 +44,17 @@ const MovieDetail = ({ route, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const [activeMovieVideoKey, setActiveMovieVideoKey] = useState('')
 
+  //Get Teaser and Trailer videos
   useEffect(() => {
     dispatch(getTeaserTrailer(movieItem.id))
   }, [movieItem.id])
-  //StatusBar.setShowHideTransition('fade');
 
+  //StatusBar.setShowHideTransition('fade');
 
   return (
 
-    <View style={{ flex: 1, minHeight: screenHeight,backgroundColor: theme.bg }}>
-      <StatusBar translucent backgroundColor="transparent" />
+    <View style={{ flex: 1, minHeight: screenHeight, backgroundColor: theme.bg }}>
+      <StatusBar translucent backgroundColor="transparent" barStyle='light-content' />
       <Modal
         animationType='slide'
         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
@@ -107,19 +108,33 @@ const MovieDetail = ({ route, navigation }) => {
               left: 10,
               zIndex: 1,
               paddingRight: 20,
-              paddingBottom: 20
+              paddingBottom: 20,
+              //backgroundColor:'red'
             }}
               name='chevron-left' size={32} color={'#fff'} />
           </TouchableWithoutFeedback>
-          <Image style={styles.poster}
-            resizeMode='cover'
-            source={{
-              uri: "https://image.tmdb.org/t/p/w500/" + movieItem.backdrop_path
-            }} />
+
+          {movieItem.backdrop_path !== null ? (
+            <Image style={[styles.poster, {width:screeWidht}]} resizeMode='cover' source={{ uri: "https://image.tmdb.org/t/p/w500/" + movieItem.backdrop_path }} />
+          ) : (
+            <Image style={[styles.poster, {width:screeWidht}]} resizeMode='center'  source={require("../assets/no_image_available.jpg")} />
+          )}
+
+          <MaterialCommunityIcons style={{
+            position: 'absolute',
+            top: 40,
+            left: screeWidht - 50,
+            zIndex: 1,
+            paddingRight: 20,
+            paddingBottom: 20,
+            //backgroundColor:'red'
+          }}
+            name='heart' size={32} color={'#fff'} />
+
           <View style={{ flex: 1, padding: 20, }}>
             <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: 'center', }}>
               <View style={{ flexWrap: 'wrap', flexDirection: 'column' }}>
-                <Text style={[styles.title, { color: theme.text }]}>{movieItem.title}</Text>
+                <Text style={[styles.title, { color: theme.text, width:screeWidht -90 }]}>{movieItem.title}</Text>
                 <Text style={{ color: theme.text }}>{movieItem.release_date}</Text>
               </View>
               <View style={{
@@ -172,11 +187,11 @@ export default MovieDetail
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
+
   },
   poster: {
     height: 281,
-    backgroundColor: 'gray'
+    backgroundColor: 'white'
   },
   title: {
     fontSize: 17,

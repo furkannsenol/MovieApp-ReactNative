@@ -1,4 +1,5 @@
 {
   "name": "MovieApp2",
-  "displayName": "MovieApp2"
+  "displayName": "MovieApp2",
+  "orientation": "portrait"
 }

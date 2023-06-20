@@ -51,18 +51,19 @@ const PopularViewAll = ({ route }) => {
     }
 
     return (
-        <View style={{ paddingHorizontal: 10, flex: 1, backgroundColor: theme.bg }}>
-            <FlatList
-                ref={flatListRef}
-                data={popularMoviesAll}
-                keyExtractor={(item, index) => item.id}
-                renderItem={({ item, index }) => <RecentMovieItem item={item} index={index} theme={theme} />}
-                onEndReached={loadMoreItem}
-                onEndReachedThreshold={0.8}
-                ListFooterComponent={renderLoader}
-                onScroll={(event) => setScrollPosition(event.nativeEvent.contentOffset.y.toFixed(0))}
+        <View style={{ paddingHorizontal: 10, flex: 1, backgroundColor: theme.bg,paddingTop:10 }}>
 
-            />
+                <FlatList
+                    ref={flatListRef}
+                    data={popularMoviesAll}
+                    keyExtractor={(item, index) => item.id}
+                    renderItem={({ item, index }) => <RecentMovieItem item={item} index={index} theme={theme} />}
+                    onEndReached={loadMoreItem}
+                    onEndReachedThreshold={0.1}
+                    ListFooterComponent={renderLoader}
+                    onScroll={(event) => setScrollPosition(event.nativeEvent.contentOffset.y.toFixed(0))}
+                />
+
         </View>
     )
 }

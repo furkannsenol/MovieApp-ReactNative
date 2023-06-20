@@ -16,59 +16,69 @@ import { useNavigation } from '@react-navigation/native';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 
 import SplashScreen from 'react-native-splash-screen';
+import { setSearchMovieClear } from '../redux/actions/searchMovieActions';
 
 const Home = () => {
+
   const navigation = useNavigation()
   const dispatch = useDispatch()
 
   //Popular Movies
   const popularMovies = useSelector(state => state.popularMovieReducer.popularMovies)
   const popularIsLoading = useSelector(state => state.popularMovieReducer.isLoading)
-
   //Recent Movies
   const recentMovies = useSelector(state => state.recentMovieReducer.recentMovies)
   const recentIsLoading = useSelector(state => state.recentMovieReducer.isLoading)
-
   //Genres 
   const genres = useSelector(state => state.genreReducer.genres)
   const genreIsLoading = useSelector(state => state.genreReducer.isLoading)
   const genresName = useSelector(state => state.genreReducer.genresName)
-
   //Theme Mode
   const themeMode = useSelector(state => state.themeModeReducer.themeMode)
   const theme = themeMode === 'dark' ? darkTheme : lightTheme
 
+  //SplashScreen Setting
   useEffect(() => {
     SplashScreen.hide();
   }, []);
 
+  //BottomNavigationBar Theme Mode
   useEffect(() => {
     SystemNavigationBar.setNavigationColor(theme.bg, 'dark')
   }, [theme])
 
+  //Get Popular Movies
   useEffect(() => {
     dispatch(getPopularMovie(1))
   }, [])
 
+  //Get Recent Movies
   useEffect(() => {
     dispatch(getRecentMovie(1))
   }, [])
 
+  //Get Genres
   useEffect(() => {
     dispatch(getGenre())
   }, [])
 
+  //View More Setting for Popular Movies
   const loadMorePopular = () => {
     dispatch(setPopularMovieClear([]));
     dispatch(setPopularPageNumber(1));
   };
 
+  //View More Setting for Recent Movies
   const loadMoreRecent = () => {
     dispatch(setRecentMovieClear([]))
     dispatch(setRecentPageNumber(1))
   }
 
-  const statusBarHeight = StatusBar.currentHeight;
+  const loadSearch = () => {
+    dispatch(setSearchMovieClear())
+  };
+
+  //const statusBarHeight = StatusBar.currentHeight;
 
   return (
 
@@ -81,7 +91,7 @@ const Home = () => {
 
           <View style={styles.header} >
             <Text style={[styles.title, { color: theme.text }]}> Movie Night </Text>
-            <TouchableWithoutFeedback onPress={() => navigation.navigate("SearchMovie", { theme: theme })}>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate("SearchMovie", { theme: theme }, loadSearch())}>
               <MaterialCommunityIcons name='magnify' size={24} color={theme.text} />
             </TouchableWithoutFeedback>
           </View>

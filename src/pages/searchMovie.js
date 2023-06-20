@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, TouchableWithoutFeedback, Dimensions, ScrollView, FlatList, ActivityIndicator } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import { darkTheme, lightTheme } from '../styles/themeMode';
 import { useEffect } from 'react';
-import { getSearchMovie, setSearchMovieClear } from '../redux/actions/searchMovieActions';
+import { getSearchMovie, setSearchMovieClear, setSearchPageNumber } from '../redux/actions/searchMovieActions';
 import RecentMovieItem from '../components/recentMovieItem';
+
 
 const SearchMovie = ({ route, navigation }) => {
     const dispatch = useDispatch()
@@ -13,14 +14,24 @@ const SearchMovie = ({ route, navigation }) => {
     const searchMovies = useSelector(state => state.searchMovieReducer.searchMovies)
     const totalResults = useSelector(state => state.searchMovieReducer.totalResults)
     const isLoading = useSelector(state => state.searchMovieReducer.isLoading)
-    const theme = route.params.theme
+    const pageNumber = useSelector(state => state.searchMovieReducer.pageNumber)
 
+    const theme = route.params.theme
+    const deviceWidth = Dimensions.get('window').width
+    const _width = deviceWidth - 86
+    const deviceHeight = Dimensions.get('window').height
+
+    const flatListRef = useRef(null)
 
     const [text, setText] = useState('');
 
     const clearText = () => {
         setText('');
     };
+    const handleChangeText = (inputText) => {
+        dispatch(setSearchPageNumber(1))
+        setText(inputText)
+    }
 
     // useEffect(() => {
     //     console.log(text)
@@ -39,20 +50,21 @@ const SearchMovie = ({ route, navigation }) => {
 
         if (text.length > 2) {
             timeoutId = setTimeout(() => {
-                dispatch(setSearchMovieClear());
-                dispatch(getSearchMovie(text, 1));
+                if (pageNumber === 1) {
+                    dispatch(setSearchMovieClear());
+                }
+                dispatch(getSearchMovie(text, pageNumber));
             }, 500);
         }
-
         return () => clearTimeout(timeoutId);
+    }, [text, pageNumber]);
 
-    }, [text]);
-
-    // useEffect(() => {
-    //     console.log(searchMovies)
-    //     console.log(totalPages)
-    //     console.log(totalResults)
-    // }, [searchMovies])
+    useEffect(() => {
+        //console.log(searchMovies)
+        console.log(pageNumber)
+        //rconsole.log(totalPages)
+        // console.log(totalResults)
+    }, [searchMovies])
 
     const renderLoader = () => {
         if (isLoading) {
@@ -66,10 +78,17 @@ const SearchMovie = ({ route, navigation }) => {
         }
     }
 
+    const scrollToTop = () => {
+        if (flatListRef.current) {
+            flatListRef.current.scrollToOffset({ offset: 0, animated: true });
+        }
+    }
 
-    const deviceWidth = Dimensions.get('window').width
-    const _width = deviceWidth - 86
-    const deviceHeight = Dimensions.get('window').height
+    const loadMoreItem = () => {
+        if (!isLoading && pageNumber < totalPages) {
+            dispatch(setSearchPageNumber(pageNumber + 1));
+        }
+    }
 
     return (
         <View style={{ flex: 1, backgroundColor: theme.bg }}>
@@ -88,7 +107,7 @@ const SearchMovie = ({ route, navigation }) => {
                     <TextInput
                         style={{ flex: 1, height: 40, color: theme.text }}
                         value={text}
-                        onChangeText={setText}
+                        onChangeText={handleChangeText}
                         maxLength={30}
                         underlineColorAndroid="transparent"
                         placeholderTextColor={theme.tabBarInA}
@@ -106,38 +125,38 @@ const SearchMovie = ({ route, navigation }) => {
             </View>
 
             <View style={{ marginTop: 20 }}  >
-                {
-                    isLoading ? (
-                        <ActivityIndicator size='small' />
-                    ) : null
-                }
+                {text.length > 2 && (
+                    <View>
+                        <Text style={{ color: theme.text, fontSize: 16, paddingLeft: 20 }}>{totalResults} results found for the movie '{text.toUpperCase()}'</Text>
+                    </View>
+                )}
 
-                {
-                    text.length > 2 && (
-                        <View>
-                            <Text style={{ color: theme.text, fontSize: 16, paddingLeft: 20 }}>{totalResults} results found for the movie '{text.toUpperCase()}'</Text>
-                        </View>
-                    )
-                }
             </View>
+
             <View style={{ paddingTop: 20, paddingLeft: 20, flex: 1 }}>
                 <FlatList
+                    ref={flatListRef}
                     data={searchMovies}
                     renderItem={({ item, index }) => <RecentMovieItem item={item} index={index} theme={theme} />}
                     keyExtractor={(item, index) => item.id}
-                //ListFooterComponent={renderLoader}
-
+                    ListFooterComponent={renderLoader}
+                    onEndReached={loadMoreItem}
+                    onEndReachedThreshold={0.5}
                 />
 
-                <MaterialCommunityIcons style={{
-                    position: 'absolute',
-                    top: deviceHeight-120,
-                    left: deviceWidth-64,
-                    zIndex: 1,
-                    paddingRight: 20,
-                    paddingBottom: 20
-                }}
-                    name='arrow-up-bold-circle' size={48} color={'#000'} />
+                <TouchableWithoutFeedback onPress={scrollToTop}>
+                    <MaterialCommunityIcons
+                        style={{
+                            position: 'absolute',
+                            top: deviceHeight - 160,
+                            left: deviceWidth - 70,
+                            zIndex: 1,
+                            padding: 10,
+                            //backgroundColor: 'red'
+                        }}
+                        name='arrow-up-bold-circle' size={48} color={theme.text}
+                    />
+                </TouchableWithoutFeedback>
             </View>
 
         </View>

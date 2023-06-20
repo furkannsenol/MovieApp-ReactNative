@@ -14,16 +14,15 @@ const RecentMovieItem = ({ item, theme, genres }) => {
     const deviceWidth = Dimensions.get('window').width
     const _width = deviceWidth - 40 - 171
 
-
-    
-
     return (
         <TouchableWithoutFeedback onPress={() => navigation.navigate("MovieDetail", { item: item })}>
 
             <View style={styles.item}>
-                <Image
-                    style={styles.poster}
-                    source={{ uri: "https://image.tmdb.org/t/p/w342" + item.poster_path }} />
+                {item.poster_path !== null ? (
+                    <Image style={styles.poster} source={{ uri: "https://image.tmdb.org/t/p/w342" + item.poster_path }} />
+                ) : (
+                    <Image style={[styles.poster, {resizeMode:'contain'}]} source={require("../assets/no_image_available.jpg")} />
+                )}
 
                 <View style={{ marginLeft: 10, width: _width }}>
 
@@ -33,7 +32,7 @@ const RecentMovieItem = ({ item, theme, genres }) => {
                         <MaterialCommunityIcons name='star' size={20} color={"#FE6D8E"} />
                         <Text style={{ alignSelf: 'center', fontSize: 15, fontWeight: 'bold', color: theme.text }}>{(item.vote_average).toFixed(1)}</Text>
                         <Text style={{ fontSize: 10, alignSelf: 'flex-end', color: theme.text }}>/10</Text>
-                        
+
                     </View>
 
                 </View>
@@ -55,7 +54,7 @@ const styles = StyleSheet.create({
         height: 255.5,
         borderRadius: 10,
         marginBottom: 10,
-        backgroundColor: 'gray'
+        backgroundColor: 'gray',
     },
 
 })
