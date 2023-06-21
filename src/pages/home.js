@@ -103,7 +103,7 @@ const Home = () => {
           >
             <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: 'center', paddingHorizontal: 10, marginBottom: 10 }}>
               <Text style={{ color: theme.text }}>Popular Movies</Text>
-              <TouchableWithoutFeedback onPress={() => { navigation.navigate('PopularViewAll', { theme: theme }, loadMorePopular()) }}>
+              <TouchableWithoutFeedback onPress={() => { navigation.navigate('PopularViewAll', { theme: theme }, loadMorePopular()) }} >
                 <View style={{ flexDirection: "row", flexWrap: 'wrap', alignItems: 'center' }}>
                   <Text style={{ color: theme.text }}>View All</Text>
                   <MaterialCommunityIcons name='chevron-right' size={20} color={theme.text} />
@@ -112,10 +112,10 @@ const Home = () => {
             </View>
 
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-              <View style={{ flexDirection: "row", flex: 1, paddingLeft: 10 }}>
+              <View style={{ flexDirection: "row", flex: 1, paddingLeft: 10 }} >
                 {
                   popularMovies.map((item, index) => {
-                    return <PopularMovieItem item={item} key={index} theme={theme.text} />
+                    return <PopularMovieItem item={item} key={index} theme={theme.text}  />
                   })}
               </View>
             </ScrollView>

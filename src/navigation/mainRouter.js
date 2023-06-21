@@ -27,7 +27,7 @@ const MainRouter = () => {
             initialRouteName='Router'
             screenOptions={{
               headerShown: false,
-              animation: 'slide_from_bottom',
+              animation: 'slide_from_right',
             }}
           >
           <Stack.Screen
