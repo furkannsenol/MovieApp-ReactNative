@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, TouchableWithoutFeedback, Dimensions, ScrollView, FlatList, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, TouchableWithoutFeedback, Dimensions, ScrollView, FlatList, ActivityIndicator, StatusBar } from 'react-native'
 import React, { useState, useRef } from 'react'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +15,11 @@ const SearchMovie = ({ route, navigation }) => {
     const totalResults = useSelector(state => state.searchMovieReducer.totalResults)
     const isLoading = useSelector(state => state.searchMovieReducer.isLoading)
     const pageNumber = useSelector(state => state.searchMovieReducer.pageNumber)
+
+    const screenHeight = Dimensions.get('screen').height;
+    const windowHeight = Dimensions.get('window').height;
+    const navbarHeight = screenHeight - windowHeight + StatusBar.currentHeight;
+    //console.log(navbarHeight)
 
     const theme = route.params.theme
     const deviceWidth = Dimensions.get('window').width
@@ -54,14 +59,14 @@ const SearchMovie = ({ route, navigation }) => {
                     dispatch(setSearchMovieClear());
                 }
                 dispatch(getSearchMovie(text, pageNumber));
-            }, 500);
+            }, 100);
         }
         return () => clearTimeout(timeoutId);
     }, [text, pageNumber]);
 
     useEffect(() => {
         //console.log(searchMovies)
-        console.log(pageNumber)
+        console.log("Search movie page number: " + pageNumber)
         //rconsole.log(totalPages)
         // console.log(totalResults)
     }, [searchMovies])
@@ -148,7 +153,7 @@ const SearchMovie = ({ route, navigation }) => {
                     <MaterialCommunityIcons
                         style={{
                             position: 'absolute',
-                            top: deviceHeight - 160,
+                            bottom: navbarHeight - 80,
                             left: deviceWidth - 70,
                             zIndex: 1,
                             padding: 10,

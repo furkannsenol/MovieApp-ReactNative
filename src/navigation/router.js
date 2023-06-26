@@ -1,5 +1,5 @@
 import React, { lazy, useEffect } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -9,15 +9,20 @@ import Favorite from '../pages/favorite';
 import Settings from '../pages/settings';
 
 import { darkTheme, lightTheme } from '../styles/themeMode';
+import { getAllFavoriteMovie, movieDatabaseChanged } from '../redux/actions/favoriteMovieActions';
 
 const Tab = createBottomTabNavigator();
 
 const Router = () => {
-
+    const dispatch = useDispatch()
     //Theme Mode
     const themeMode = useSelector(state => state.themeModeReducer.themeMode)
     const theme = themeMode === 'dark' ? darkTheme : lightTheme
-
+    const favoriteMovies = useSelector(state => state.favoriteMovieReducer.favoriteMovies)
+    const databaseChanged = useSelector(state => state.favoriteMovieReducer.databaseChanged)
+    useEffect(() => {
+        dispatch(getAllFavoriteMovie())
+    }, [databaseChanged])
     return (
         <SafeAreaView style={{ height: '100%' }}>
             <Tab.Navigator
@@ -37,6 +42,9 @@ const Router = () => {
                     tabBarStyle: { backgroundColor: theme.bg },
                     tabBarLabelStyle: { paddingBottom: 5 },
                     tabBarHideOnKeyboard: true,
+                    headerStyle: { backgroundColor: theme.bg },
+                    headerTintColor: theme.text,
+
                 }}
             >
                 <Tab.Screen
@@ -58,7 +66,7 @@ const Router = () => {
                         tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name="heart" size={24} color={color} />
                         ),
-                        tabBarBadge: 3,
+                        tabBarBadge: favoriteMovies ? (favoriteMovies.length >= 9 ? '9+' : favoriteMovies.length) : 0,
                         headerShown: false
                     }}
                 />

@@ -4,25 +4,25 @@ class Movie {
         title,
         poster_path,
         backdrop_path,
-        genre,
-        genre_ids,
+        //genre,
+        //genre_ids,
         overview,
-        popularity,
+        //popularity,
         release_date,
         vote_average,
-        vote_count,
+        //vote_count,
     }) {
         this.id = id
         this.title = title
         this.poster_path = poster_path
         this.backdrop_path = backdrop_path
-        this.genre = genre
-        this.genre_ids = genre_ids
+        //this.genre = genre
+        //this.genre_ids = genre_ids
         this.overview = overview
-        this.popularity = popularity
+        //this.popularity = popularity
         this.release_date = release_date
         this.vote_average = vote_average
-        this.vote_count = vote_count
+        //this.vote_count = vote_count
     }
 
 

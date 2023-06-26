@@ -12,6 +12,7 @@ import genreReducer from '../reducers/genreReducer';
 import teaserTrailerReducer from '../reducers/teaserTrailerReducer';
 import themeModeReducer from '../reducers/themeModeReducer';
 import searchMovieReducer from '../reducers/searchMovieReducer';
+import favoriteMovieReducer from '../reducers/favoriteMovieReducer';
 
 const persistConfig = {
     key: 'root',
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
     teaserTrailerReducer,
     searchMovieReducer,
     themeModeReducer,
+    favoriteMovieReducer,
 })
 
 //const store = createStore(rootReducer, applyMiddleware(thunk))

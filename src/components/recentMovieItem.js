@@ -13,33 +13,39 @@ const RecentMovieItem = ({ item, theme, genres }) => {
 
     const deviceWidth = Dimensions.get('window').width
     const _width = deviceWidth - 40 - 171
+    
+    
+return (
+    <TouchableWithoutFeedback onPress={() => navigation.navigate("MovieDetail", { item: item })}>
 
-    return (
-        <TouchableWithoutFeedback onPress={() => navigation.navigate("MovieDetail", { item: item })}>
-
-            <View style={styles.item}>
-                {item.poster_path !== null ? (
-                    <Image style={styles.poster} source={{ uri: "https://image.tmdb.org/t/p/w342" + item.poster_path }} />
+        <View style={styles.item}>
+            {item.poster_path !== null ? (
+                (item.poster_path.length < 100) ? (
+                    <Image style={styles.poster} source={{ uri: "https://image.tmdb.org/t/p/w342" + item.poster_path }}/>
                 ) : (
-                    <Image style={[styles.poster, {resizeMode:'contain'}]} source={require("../assets/no_image_available.jpg")} />
+                    <Image style={styles.poster} source={{ uri: item.poster_path }}/>
+                )
+            ) :
+                (
+                    <Image style={[styles.poster, { resizeMode: 'contain' }]} source={require("../assets/no_image_available.jpg")} />
                 )}
 
-                <View style={{ marginLeft: 10, width: _width }}>
+            <View style={{ marginLeft: 10, width: _width }}>
 
-                    <Text style={{ color: theme.text }}>{item.title}</Text>
+                <Text style={{ color: theme.text }}>{item.title}</Text>
 
-                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 5 }}>
-                        <MaterialCommunityIcons name='star' size={20} color={"#FE6D8E"} />
-                        <Text style={{ alignSelf: 'center', fontSize: 15, fontWeight: 'bold', color: theme.text }}>{(item.vote_average).toFixed(1)}</Text>
-                        <Text style={{ fontSize: 10, alignSelf: 'flex-end', color: theme.text }}>/10</Text>
-
-                    </View>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 5 }}>
+                    <MaterialCommunityIcons name='star' size={20} color={"#FE6D8E"} />
+                    <Text style={{ alignSelf: 'center', fontSize: 15, fontWeight: 'bold', color: theme.text }}>{(item.vote_average).toFixed(1)}</Text>
+                    <Text style={{ fontSize: 10, alignSelf: 'flex-end', color: theme.text }}>/10</Text>
 
                 </View>
-            </View>
 
-        </TouchableWithoutFeedback>
-    )
+            </View>
+        </View>
+
+    </TouchableWithoutFeedback>
+)
 }
 
 export default RecentMovieItem
